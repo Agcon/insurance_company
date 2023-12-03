@@ -1,6 +1,5 @@
 package ru.agcon.insurance_company.controllers;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -16,12 +15,10 @@ import java.util.List;
 @PreAuthorize("hasAuthority('ROLE_ADMIN')")
 public class AdminController {
     private final UserService userService;
-    private final ModelMapper modelMapper;
 
     @Autowired
-    public AdminController(UserService userService, ModelMapper modelMapper) {
+    public AdminController(UserService userService) {
         this.userService = userService;
-        this.modelMapper = modelMapper;
     }
 
     @GetMapping("/users")

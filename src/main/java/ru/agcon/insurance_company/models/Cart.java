@@ -6,14 +6,15 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.io.Serializable;
+import java.util.Map;
 
 @RedisHash("carts")
 @Data
 @NoArgsConstructor
 @Component
-public class Cart {
+public class Cart implements Serializable {
     @Id
     private String userLogin;
-    private List<Insurance> insurances;
+    private Map<Integer, Integer> insuranceQuantities;
 }

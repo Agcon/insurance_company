@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Insurance Types</title>
+    <link rel="stylesheet" type="text/css" th:href="@{../../static/fragments/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../../static/insurance/index.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <h1>Типы страховок</h1>
+    <ul id="ul">
+        <li id="li" th:each="type : ${types}">
+            <a th:href="@{/insurance/{id}(id=${type.id})}" th:text="${type.name}"></a>
+
+            <div sec:authorize="hasRole('ROLE_ADMIN')">
+                <a th:href="@{/insurance/update/{id}(id=${type.id})}" th:text="Изменить">Изменить</a>
+                <form th:action="@{/insurance/delete/{id}(id=${type.id})}" method="post" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+            </div>
+        </li>
+    </ul>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <a th:href="@{/insurance/create}">
+            <button type="submit">Создать тип страховки</button>
+        </a>
+    </div>
+</body>
+</html>

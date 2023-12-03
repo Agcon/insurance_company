@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Create Insurance Type</title>
+  <link rel="stylesheet" type="text/css" th:href="@{../../static/fragments/header.css}">
+  <link rel="stylesheet" type="text/css" th:href="@{../../static/insurance/create_type.css}">
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<h2>Изменение имени типа страховки</h2>
+<form th:action="@{/insurance/update/{id}(id=${type.id})}" method="post" th:object="${typeDTO}">
+  <label for="name">Название:</label>
+  <input type="text" id="name" name="name" required/><br/>
+  <button type="submit">Изменить название</button>
+</form>
+
+</body>
+</html>

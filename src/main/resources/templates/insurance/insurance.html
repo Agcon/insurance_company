@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Insurances</title>
+    <link rel="stylesheet" type="text/css" th:href="@{../../static/fragments/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{../../static/insurance/insurance.css}">
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <h2 id="h2" th:text="${'Варианты для ' + type.name}"></h2>
+    <ul id="ul">
+        <li id="li" th:each="insurance : ${insurances}">
+            <p th:text="${insurance.name + ' - ' + insurance.price}"></p>
+            <div sec:authorize="hasRole('ROLE_ADMIN')">
+                <a th:href="@{'/insurance/' + ${type.id} + '/update/' + ${insurance.id}}">
+                    <button type="submit">Изменить</button>
+                </a>
+                <form th:action="@{'/insurance/' + ${type.id} + '/delete/' + ${insurance.id}}" method="post" style="display:inline;">
+                    <button type="submit">Удалить</button>
+                </form>
+            </div>
+        </li>
+    </ul>
+    <div sec:authorize="hasRole('ROLE_ADMIN')">
+        <a th:href="@{'/insurance/' + ${type.id} + '/create'}">
+            <button type="submit">Создать тип страховки</button>
+        </a>
+    </div>
+</body>
+</html>

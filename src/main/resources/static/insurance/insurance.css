@@ -1,0 +1,22 @@
+/* Add styles specific to the insurance page */
+#h2 {
+    text-align: center;
+    color: #333;
+}
+
+#ul {
+    list-style-type: none;
+}
+
+#li {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #c2c2c2;
+    transition: transform 0.2s;
+}
+
+#li:hover {
+    transform: scale(1.02);
+}

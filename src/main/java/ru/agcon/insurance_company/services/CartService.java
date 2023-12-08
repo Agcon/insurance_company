@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.agcon.insurance_company.models.Cart;
 import ru.agcon.insurance_company.repositories.CartRepository;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @Service
@@ -28,8 +29,7 @@ public class CartService {
     }
 
     public void clearCart(String userLogin){
-        Cart cart = new Cart();
-        cart.setUserLogin(userLogin);
+        Cart cart = new Cart(userLogin, new HashMap<>());
         cartRepository.save(userLogin, cart);
     }
 }

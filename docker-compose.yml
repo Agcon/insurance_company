@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.7-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: insurance_company_db
+    ports:
+      - "5432:5432"
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    hostname: redis
+    ports:
+      - "6379:6379"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ~/docker/redis:/redis-service/logs
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/insurance_company_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=admin
+      - REDIS_HOST=redis-service
+      - REDIS_PORT=6379

@@ -21,14 +21,4 @@ public class InsuranceDTO {
     @Column(name = "price")
     @NotNull
     private float price;
-
-    private TypeOfInsurance type;
-
-    @Column(name = "start_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date startDate;
-
-    @Column(name = "end_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date endDate;
 }

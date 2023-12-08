@@ -1,13 +1,11 @@
 package ru.agcon.insurance_company.models;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -31,14 +29,9 @@ public class Insurance {
     @JoinColumn(name = "type_id")
     private TypeOfInsurance type;
 
-    @ManyToMany(mappedBy = "insurances")
-    private List<User> users;
-
     @Column(name = "start_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date startDate;
+    private LocalDate startDate;
 
     @Column(name = "end_date")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date endDate;
+    private LocalDate endDate;
 }

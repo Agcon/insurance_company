@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.*;;
 import ru.agcon.insurance_company.dto.InsuranceDTO;
 import ru.agcon.insurance_company.dto.TypeDTO;
 import ru.agcon.insurance_company.models.Insurance;
@@ -13,6 +13,8 @@ import ru.agcon.insurance_company.models.TypeOfInsurance;
 import ru.agcon.insurance_company.services.InsuranceService;
 import ru.agcon.insurance_company.services.TypeService;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -100,6 +102,8 @@ public class InsuranceController {
         model.addAttribute("type", type);
         Insurance insurance = convertToInsurance(insuranceDTO);
         insurance.setType(type);
+        insurance.setStartDate(LocalDate.now());
+        insurance.setEndDate(insurance.getStartDate().plusYears(1));
         type.getInsurances().add(insurance);
         if (insuranceService.create(insurance)) {
             typeService.create(type);

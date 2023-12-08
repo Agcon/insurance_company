@@ -21,32 +21,19 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
+    @GetMapping("")
     public String userInfoPage(Model model){
         List<User> users = userService.getAll();
         model.addAttribute("users", users);
         return "users/users";
     }
 
-    @PostMapping("/users/change/{id}")
+    @PostMapping("/change/{id}")
     public String userChangeRole(@PathVariable("id") int id){
         User user = userService.getOne(id);
-        if (user.getRole() == "USER") user.setRole("ADMIN");
+        if ("USER".equals(user.getRole())) user.setRole("ADMIN");
         else user.setRole("USER");
-        return "redirect:/admin/users";
-    }
-
-    @GetMapping("users/cart/{id}")
-    public String userCartPage(@PathVariable("id") int id, Model model){
-        User user = userService.getOne(id);
-        model.addAttribute("insurances", user.getInsurances());
-        return "users/user_cart";
-    }
-
-    @GetMapping("/users/{id}")
-    public String showUserPage(@PathVariable("id") int id, Model model){
-        User user = userService.getOne(id);
-        model.addAttribute("user", user);
-        return "users/user_page";
+        userService.update(user);
+        return "redirect:/admin";
     }
 }

@@ -2,7 +2,7 @@ package ru.agcon.insurance_company.repositories;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.JdkSerializationRedisSerializer;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Repository;
 import ru.agcon.insurance_company.models.Cart;
 
@@ -18,7 +18,7 @@ public class CartRepository {
     @Autowired
     public CartRepository(RedisTemplate<String, Cart> redisTemplate) {
         this.redisTemplate = redisTemplate;
-        this.redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());
+        this.redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Cart.class));
         this.redisTemplate.afterPropertiesSet();
     }
 

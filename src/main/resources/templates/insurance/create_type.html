@@ -8,15 +8,15 @@
 </head>
 <body>
   <div th:replace="~{fragments/header :: header}"></div>
-  <h2>Create New Insurance Type</h2>
+  <h2>Создание нового типа страховки</h2>
   <form th:action="@{/insurance/create}" method="post" th:object="${typeDTO}">
-    <label for="name">Name:</label>
+    <label for="name">Название:</label>
     <input type="text" id="name" name="name" required/><br/>
-    <button type="submit">Create Type</button>
+    <button type="submit">Создать</button>
   </form>
 
-  <div th:if="${typeExists}" class="error-message">
-    Type with this name already exists.
+  <div th:if="${typeExists}" class="error-message" align="center">
+    <h3><b> Такая страховка уже существует!!! </b></h3>
   </div>
 </body>
 </html>

@@ -46,13 +46,6 @@ public class User implements Serializable {
     @NotEmpty
     private String role;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_insurances",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "insurance_id"))
-    private List<Insurance> insurances;
-
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role));
     }

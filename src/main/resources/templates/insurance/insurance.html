@@ -5,6 +5,7 @@
     <title>Insurances</title>
     <link rel="stylesheet" type="text/css" th:href="@{../../static/fragments/header.css}">
     <link rel="stylesheet" type="text/css" th:href="@{../../static/insurance/insurance.css}">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
     <div th:replace="~{fragments/header :: header}"></div>
@@ -12,6 +13,7 @@
     <ul id="ul">
         <li id="li" th:each="insurance : ${insurances}">
             <p th:text="${insurance.name + ' - ' + insurance.price}"></p>
+            <button class="add-button" th:attr="data-insuranceid=${insurance.getId()}">Добавить в корзину</button>
             <div sec:authorize="hasRole('ROLE_ADMIN')">
                 <a th:href="@{'/insurance/' + ${type.id} + '/update/' + ${insurance.id}}">
                     <button type="submit">Изменить</button>
@@ -27,5 +29,23 @@
             <button type="submit">Создать тип страховки</button>
         </a>
     </div>
+    <script th:inline="javascript">
+        $(document).ready(function () {
+            $(".add-button").click(function () {
+                let insuranceId = $(this).data('insuranceid');
+                addToCart(insuranceId);
+            });
+            function addToCart(insuranceId) {
+                $.ajax({
+                    type: "POST",
+                    url: "/cart/add",
+                    data: {id: insuranceId},
+                    success: function () {
+                        location.reload();
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Shopping Cart</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/static/fragments/header.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/insurance/cart.css}">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div th:if="${insurances.isEmpty()}" align="center">
+    <h2>Ваша корзина пуста</h2>
+</div>
+<div th:unless="${insurances.isEmpty()}">
+    <h2>Ваша корзина</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Страховка</th>
+            <th>Количество</th>
+            <th>Цена за штуку</th>
+            <th>Дата начала</th>
+            <th>Дата окончания</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="insurance : ${insurances}">
+            <td th:text="${insurance.getName()}"></td>
+            <td th:text="${quantities.get(insurance.getId())}"></td>
+            <td th:text="${insurance.getPrice()}"></td>
+            <td th:text="${insurance.getStartDate()}"></td>
+            <td th:text="${insurance.getEndDate()}"></td>
+            <td>
+                <button class="add-button" th:attr="data-insuranceid=${insurance.getId()}">Добавить</button>
+                <button class="delete-button" th:attr="data-insuranceid=${insurance.getId()}">Удалить</button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p align="center">Итоговая сумма: <span th:text="${result}"></span></p>
+
+    <form align="center" th:action="@{/cart/confirm}" method="post">
+        <button align="center" type="submit">Оформить покупку</button>
+    </form>
+</div>
+
+<script th:inline="javascript">
+    $(document).ready(function () {
+        $(".add-button").click(function () {
+            let insuranceId = $(this).data('insuranceid');
+            addToCart(insuranceId);
+        });
+
+        $(".delete-button").click(function () {
+            let insuranceId = $(this).data('insuranceid');
+            deleteFromCart(insuranceId);
+        });
+        function addToCart(insuranceId) {
+            $.ajax({
+                type: "POST",
+                url: "/cart/add",
+                data: {id: insuranceId},
+                success: function () {
+                    location.reload();
+                }
+            });
+        }
+
+        function deleteFromCart(insuranceId) {
+            $.ajax({
+                type: "POST",
+                url: "/cart/delete",
+                data: {id: insuranceId},
+                success: function () {
+                    location.reload();
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>

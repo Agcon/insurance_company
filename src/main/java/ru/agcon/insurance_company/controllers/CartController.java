@@ -1,21 +1,18 @@
 package ru.agcon.insurance_company.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.agcon.insurance_company.dto.InsuranceDTO;
 import ru.agcon.insurance_company.models.Cart;
 import ru.agcon.insurance_company.models.Insurance;
 import ru.agcon.insurance_company.services.CartService;
 import ru.agcon.insurance_company.services.InsuranceService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/cart")
@@ -30,32 +27,30 @@ public class CartController {
     }
 
     @PostMapping("/add")
-    public void addToCart(@RequestParam("id") int id){
+    public ResponseEntity<Void> addToCart(@RequestParam("id") int id){
         String userLogin = getCurrentUserLogin();
         Optional<Cart> optionalCart = cartService.getOne(userLogin);
         Cart cart;
         if (optionalCart.isEmpty()){
             cart = new Cart();
             cart.setUserLogin(userLogin);
-            cart.getInsuranceQuantities().put(id, 1);
+            Map<Integer, Integer> insuranceQuantities = new HashMap<>();
+            insuranceQuantities.put(id, 1);
+            cart.setInsuranceQuantities(insuranceQuantities);
             cartService.createCart(cart);
         }
         else {
-            cart = optionalCart.orElse(null);
+            cart = optionalCart.get();
             Map<Integer, Integer> list = cart.getInsuranceQuantities();
-            if (list.containsKey(id)){
-                list.put(id, list.get(id) + 1);
-            }
-            else {
-                list.put(id, 1);
-            }
+            list.put(id, list.getOrDefault(id, 0) + 1);
             cart.setInsuranceQuantities(list);
             cartService.createCart(cart);
         }
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/delete")
-    public void deleteFromCart(@RequestParam("id") int id){
+    public ResponseEntity<Void> deleteFromCart(@RequestParam("id") int id){
         String userLogin = getCurrentUserLogin();
         Cart cart = cartService.getOne(userLogin).orElse(null);
         Map<Integer, Integer> list = cart.getInsuranceQuantities();
@@ -67,6 +62,7 @@ public class CartController {
         }
         cart.setInsuranceQuantities(list);
         cartService.createCart(cart);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/get")
@@ -74,25 +70,36 @@ public class CartController {
         String userLogin = getCurrentUserLogin();
         Optional<Cart> optionalCart = cartService.getOne(userLogin);
         Cart cart;
+        Map<Integer, Integer> list = new HashMap<>();
         if (optionalCart.isEmpty()){
             cart = new Cart();
             cart.setUserLogin(userLogin);
+            cart.setInsuranceQuantities(list);
             cartService.createCart(cart);
         }
         else {
             cart = optionalCart.orElse(null);
-            Map<Integer, Integer> list = cart.getInsuranceQuantities();
-
+            list = cart.getInsuranceQuantities();
         }
-//        model.addAttribute("")
-        //TODO продумать отображение корзины.
-        return "cart";
+        int summa = 0;
+        List<Insurance> insuranceList = new ArrayList<>();
+        for(Map.Entry<Integer, Integer> entry: list.entrySet()) {
+            Integer key = entry.getKey();
+            Integer value = entry.getValue();
+            summa += (insuranceService.getOne(key).getPrice() * value);
+            insuranceList.add(insuranceService.getOne(key));
+        }
+        model.addAttribute("insurances", insuranceList);
+        model.addAttribute("quantities", list);
+        model.addAttribute("result", summa);
+        return "insurance/cart";
     }
 
     @PostMapping("/confirm")
-    public void confirm(){
+    public String confirm(){
         String userLogin = getCurrentUserLogin();
         cartService.clearCart(userLogin);
+        return "redirect:/cart/get";
     }
 
     private String getCurrentUserLogin() {
